@@ -9,8 +9,16 @@ let StopCount = null;
 /*--------------------------------------------------
 ストップウォッチ　定数
 ・数字を表示する箇所の指定
+・秒数を保管する箱
+・分数を保管する箱
+・時数を保管する箱
+・インターバルの間隔を指定する箱
 ---------------------------------------------------*/
-const TimeDispay=$(".display");
+const TimeDispay = $(".display");
+const Second_Per_CentiSecond = 100;
+const Minute_per_Second = 60;
+const Hour_Per_Minute = 60;
+const Interval_MS = 10;
 /*--------------------------------------------------
 ストップウォッチ　関数
 ・スタートを押したら始まる
@@ -21,25 +29,25 @@ function Start(){
   if(StopCount===null){
     StopCount = setInterval(function(){
       TimeCount++;
-      let MSecNum = TimeCount%100;
-      if(MSecNum<10){
-        MSecNum = "0"+MSecNum.toString();
+      let Centiseconds = TimeCount%Second_Per_CentiSecond;
+      if(Centiseconds<10){
+        Centiseconds = "0"+Centiseconds.toString();
       }
-      let SecNum = Math.floor(TimeCount/100)%60;
-      if(SecNum<10){
-        SecNum = "0"+SecNum.toString();
+      let Seconds = Math.floor(TimeCount/Second_Per_CentiSecond)%Minute_per_Second;
+      if(Seconds<10){
+        Seconds = "0"+Seconds.toString();
       }
-      let MinNum = Math.floor(TimeCount/6000)%60;
-      if(MinNum<10){
-        MinNum = "0"+MinNum.toString();
+      let Minutes = Math.floor(TimeCount/(Second_Per_CentiSecond*Minute_per_Second))%Hour_Per_Minute;
+      if(Minutes<10){
+        Minutes = "0"+Minutes.toString();
       }
-      let HouNum = Math.floor(TimeCount/360000)%100;
-      if(HouNum<10){
-        HouNum = "0"+HouNum.toString();
+      let Hours = Math.floor(TimeCount/(Second_Per_CentiSecond*Minute_per_Second*Hour_Per_Minute));
+      if(Hours<10){
+        Hours = "0"+Hours.toString();
       }
-      TimeDispay.text(HouNum+":"+MinNum+":"+SecNum+","+MSecNum);
+      TimeDispay.text(Hours+":"+Minutes+":"+Seconds+","+Centiseconds);
       $(".start").css("background-color","#333");
-    }, 10);
+    }, Interval_MS);
   };
 };
 function Stop(){
@@ -70,7 +78,7 @@ let lastInput = ""
 ・数字を教示する箇所の指定
 ・データ要素を集めて保管する箱
 ---------------------------------------------------*/
-const ResultDisplay=$(".result")
+const ResultDisplay = $(".result")
 const NumButton = document.querySelectorAll("[data-number]")
 const OpeButton = document.querySelectorAll("[data-operator]")
 const PointButton = document.querySelector("[data-point]")
@@ -102,7 +110,7 @@ function inputNumber(Numvalue){
   }else if(current!=="0"){
     current += Numvalue;
   }
-  lastInput="number";
+  lastInput = "number";
   ResultDisplay.text(progress+current);
 }
 OpeButton.forEach(button=>{
